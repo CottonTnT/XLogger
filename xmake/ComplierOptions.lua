@@ -5,12 +5,13 @@ rule("compiler_options")
         -- GCC / Clang 通用编译选项
         if target:has_tool("cxx", "gcc", "gxx", "clang", "clangxx") then
             target:add(
-                "cxflags", 
-                "-Wall", 
-                "-Wextra", 
-                "-Wpedantic", 
-                "-fno-strict-aliasing", 
-                "-Wno-builtin-macro-redefined"
+                "cxflags",
+                "-Wall",
+                "-Wextra",
+                "-Wpedantic",
+                "-Werror"
+                -- "-fno-strict-aliasing",
+                -- "-Wno-builtin-macro-redefined"
             )
         end
 
@@ -22,7 +23,7 @@ rule("compiler_options")
             )
             target:add(
                 "ldflags", 
-                "-rdynamic"
+                "-rdynamic" -- 栈回溯需要
             )
         end
     end)
@@ -30,7 +31,8 @@ rule("compiler_options")
     -- 根据构建模式添加定义与编译参数
     on_load(function (target)
         if is_mode("debug") then
-            target:add("defines", "PANS_DEBUG")
+            -- windows 平台 DEBUG 宏被占用
+            target:add("defines", "X_DEBUG")
             target:add("cxflags", "-O0", "-g3", "-ggdb")
             
             -- 代码覆盖率选项（默认关闭，可使用 xmake f --coverage=y 开启）

@@ -2,9 +2,9 @@ build/*
 bin/*
 lib/*
 test/*
-!test/testlogger.cpp
-!test/testfiber.cpp
-!test/scheduler.cpp
+!test/xmake.lua
+!test/*Test.cpp
+!test/*.hpp
 .xmake/*
 .vscode/*
 .cache/*
