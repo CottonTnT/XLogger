@@ -14,12 +14,6 @@ add_rules("plugin.compile_commands.autoupdate", {outputdir=".vscode"})
 -- 设置语言标准 (gnu++20 对应 Enable C++ Extensions 的 C++20)
 set_languages("c11", "gnu++20")
 
--- 如果主机是 Linux，指定使用 GCC/G++ 编译器
-if is_host("linux") then
-    set_config("cc", "/usr/bin/gcc")
-    set_config("cxx", "/usr/bin/g++")
-end
-
 -- 自定义构建选项：控制 examples、tools、tests 的构建
 option("buildExamples")
     set_default(true)
@@ -39,11 +33,29 @@ option("buildTests")
     set_description("Build tests")
 option_end()
 
+-- 是否将告警视为错误。包安装时通过 --werror=n 关闭，
+-- 避免不同编译器版本冒出新告警导致包安装失败。
+option("werror")
+    set_default(true)
+    set_showmenu(true)
+    set_description("Treat compiler warnings as errors")
+option_end()
+
+-- 是否注册 common 所在的私有 xmake 仓库。开发时默认开启，保证 add_requires("common") 能解析；
+-- 作为 xmake 包安装时由 package 系统自动传入仓库，此时通过 --localrepo=n 关闭本注册。
+option("localrepo")
+    set_default(true)
+    set_showmenu(true)
+    set_description("Register the cot-repo repository for the common dependency")
+option_end()
+
 -- 导入编译选项规则（-Wall / -Wextra / -Wpedantic 等）
 includes("xmake/ComplierOptions.lua")
 
--- common 模块来自远程 xmake 包仓库 my-xmake-repo
-add_repositories("cot-repo https://github.com/CottonTnT/my-xmake-repo.git")
+-- common 来自私有 xmake 仓库 my-xmake-repo
+if has_config("localrepo") then
+    add_repositories("cot-repo https://github.com/CottonTnT/my-xmake-repo.git")
+end
 add_requires("common")
 
 if has_config("buildExamples") then
@@ -75,6 +87,11 @@ target("xlogger")
 
     -- 继承全局编译选项规则
     add_rules("compiler_options")
+
+    -- -Werror 受 werror 选项控制（开发默认开启，包安装时关闭）
+    if has_config("werror") then
+        add_cxflags("-Werror")
+    end
 
     -- 依赖 common 头文件库（public：下游可透明使用 XType/InlineBuffer 等）
     add_packages("common", { public = true })

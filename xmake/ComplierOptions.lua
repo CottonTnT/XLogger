@@ -8,8 +8,8 @@ rule("compiler_options")
                 "cxflags",
                 "-Wall",
                 "-Wextra",
-                "-Wpedantic",
-                "-Werror"
+                "-Wpedantic"
+                -- "-Werror" 由 xmake.lua 中的 werror 选项控制
                 -- "-fno-strict-aliasing",
                 -- "-Wno-builtin-macro-redefined"
             )
