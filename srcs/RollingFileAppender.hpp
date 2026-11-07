@@ -74,7 +74,6 @@ private:
         -> std::filesystem::path;
 
     void backendWorkerThread_(std::stop_token stopToken, std::latch& started, std::size_t rollSize, std::chrono::seconds flushInterval, std::size_t checkEveryN);
-    void rollFileOrNot_();
 
     static auto isMessageOversized_(std::string_view msg) -> bool;
 
