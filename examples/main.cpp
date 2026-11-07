@@ -1,6 +1,6 @@
 #include "LogAppender.h"
-#include "Logger.h"
 #include "LogLevel.h"
+#include "Logger.h"
 
 #include "order_service.h"
 
@@ -13,6 +13,7 @@ int main()
     logger->setLogLevel(X::LogLevel::INFO);
     logger->setFormatPattern("{date:%H:%M:%S} [{level}] [{logger}] {message}{newline}");
     logger->addAppender(X::LogAppender::makeStdoutAppender());
+    logger->addAppender(X::LogAppender::makeRollingFileAppender("/home/cot/CxxProjects/xlogger/examples", 4_mb, /*flushInterval=*/3));
 
     logger->info("hello xlogger, answer={}", 42);
     logger->debug("这条 DEBUG 因级别过滤被丢弃");
