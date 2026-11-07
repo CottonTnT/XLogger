@@ -12,8 +12,6 @@ namespace X::detail {
 template <typename T>
 concept LogAppenderConcept = requires(T impl, std::string_view event) {
     { impl.append(event) };
-    { impl.flush() };
-    { impl.sync() };
 };
 
 /**
@@ -41,18 +39,9 @@ public:
         impl_.append(event);
     }
 
-    void flush() override
-    {
-        impl_.flush();
-    }
-    void sync() override
-    {
-        impl_.sync();
-    }
-
     ~AppenderProxy() override = default;
 
 private:
     Impl impl_;
 };
-}
+} // namespace X::detail

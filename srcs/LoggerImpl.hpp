@@ -53,9 +53,6 @@ public:
     void removeAppender(const AppenderPtr& appender);
     void clearAppenders();
 
-    void flush();
-    void sync();
-
     void setRoot(const LoggerSPtr& root) noexcept;
 };
 
@@ -170,38 +167,6 @@ inline void Logger::Impl::clearAppenders()
 {
     auto _ = std::unique_lock<std::shared_mutex>(mtx_);
     logAppenderList_.clear();
-}
-
-inline void Logger::Impl::flush()
-{
-    auto lock = std::shared_lock<std::shared_mutex>(mtx_);
-    if (logAppenderList_.empty()) {
-        lock.unlock();
-        if (rootLogger_ != nullptr) {
-            rootLogger_->impl_->flush();
-        }
-        return;
-    }
-
-    for (const AppenderPtr& appender : logAppenderList_) {
-        appender->flush();
-    }
-}
-
-inline void Logger::Impl::sync()
-{
-    auto lock = std::shared_lock<std::shared_mutex>(mtx_);
-    if (logAppenderList_.empty()) {
-        lock.unlock();
-        if (rootLogger_ != nullptr) {
-            rootLogger_->impl_->sync();
-        }
-        return;
-    }
-
-    for (const AppenderPtr& appender : logAppenderList_) {
-        appender->sync();
-    }
 }
 
 inline void Logger::Impl::setRoot(const LoggerSPtr& root) noexcept

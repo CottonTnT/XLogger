@@ -113,9 +113,13 @@ public:
 
 class NewLineFormatItem {
 public:
-    void format(const LogRecordView&, FormattedRecordBuffer& buf) const
+    void format(const LogRecordView& /*unused*/, FormattedRecordBuffer& buf) const
     {
+#ifdef _WIN32
+        buf.append("\r\n");
+#else
         buf.append("\n");
+#endif
     }
 };
 

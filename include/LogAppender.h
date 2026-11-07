@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstddef>
 #include <memory>
+#include <string>
 #include <string_view>
 
 namespace X {
@@ -23,13 +25,14 @@ public:
 
     virtual void append(std::string_view message) = 0;
 
-    virtual void flush() = 0;
-    virtual void sync() = 0;
-
     [[nodiscard]] static auto makeStdoutAppender()
         -> AppenderPtr;
-    // [[nodiscard]] static auto makeFileAppender(std::string file_name)
-    //     -> AppenderPtr;
+
+    [[nodiscard]] static auto makeRollingFileAppender(
+        std::string baseName,
+        std::size_t rollSize = 512 * 1024 * 1024, // 按大小滚动阈值（字节）
+        int flushInterval = 3) // 秒；空闲时周期 flush 间隔
+        -> AppenderPtr;
 };
 
 }

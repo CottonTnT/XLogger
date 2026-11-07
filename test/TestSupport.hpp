@@ -17,8 +17,6 @@ public:
         auto lock = std::lock_guard<std::mutex> { mtx_ };
         messages_.emplace_back(message);
     }
-    void flush() override { }
-    void sync() override { }
 
     [[nodiscard]] auto messages() const -> std::vector<std::string>
     {
@@ -29,7 +27,7 @@ public:
     [[nodiscard]] auto lastMessage() const -> std::string
     {
         auto lock = std::lock_guard<std::mutex> { mtx_ };
-        return messages_.empty() ? std::string {} : messages_.back();
+        return messages_.empty() ? std::string { } : messages_.back();
     }
 
     [[nodiscard]] auto count() const -> std::size_t

@@ -76,7 +76,7 @@ target("xlogger")
 
     -- 源文件与头文件（仅纳入 srcs/ 与 include/，避免把 examples/tools/test 一起编译）
     add_files("srcs/**.cpp")
-    add_headerfiles("include/**.h", "include/**.hpp")
+    add_headerfiles("include/**.h")
 
     -- C++20 标准，并向依赖者/下游 (public) 自动传递要求
     set_languages("c++20")
